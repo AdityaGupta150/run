@@ -62,6 +62,9 @@ run <filename> <compiler_args> <cpp_version> -- <program_args>
 # Future Ideas ->
 
 I may not be working on this **for now**, i have what i wanted ( this was not meant to spend an hour initially anyways :D )
+
+> Add "run --help" support too, maybe use an arg parser
+
 1. `run dbg try.cpp` -> Adds '-g' compiler flag, and executes `gdb` on compiled file
 2. `run cleaner` -> For eg, a directory has `try.cpp` `delete.cpp` `a.cpp`, then it should delete `try` `delete` `a` (sometimes i need this) if present
 3. `run` -> Should run the last command it ran (may need storing in an output file)

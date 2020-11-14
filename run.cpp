@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -35,20 +36,18 @@ int main(int argc, char const *argv[])
             break;
         }
 
-        try{
-            if( is_int(argv[i]) ) continue;   // ignore THOSE integer value `passed to g++` (those passed after '--' to the compiled program are okay)
-        }catch(...){}
+        if( is_int(argv[i]) ) continue;   // ignore THOSE integer value `passed to g++` (those passed after '--' to the compiled program are okay)
         command.insert( command.size(), argv[i]);
         command.push_back(' ');
     }
-    try{
-        int version_index = cmd_arg_to_compiled_program ? i-1 : argc-1;
-        stoi(argv[ version_index ]); // if succesful, then this is a number
 
+    int version_index = cmd_arg_to_compiled_program ? i-1 : argc-1;
+    if( is_int(argv[ version_index ]) )
+    {
         command.insert( command.size(), "-std=c++" );
         command.insert( command.size(), argv[ version_index ] );
         command.push_back(' ');
-    }catch(...){
+    }else{
         if( ! cmd_arg_to_compiled_program ){    // if there was NO argument to the compiled program
             command.insert( command.size(), argv[argc-1]);
             command.push_back(' ');
@@ -61,7 +60,8 @@ int main(int argc, char const *argv[])
     if( command.find("-o") == string::npos ){
         command.insert( command.size(), " -o " );
         string fname{argv[1]};
-        fname.erase(fname.find('.') == string::npos ? string::npos : fname.find('.'));   // the extension removed
+
+        fname.erase(fname.find('.') == string::npos ? fname.end() : std::find(fname.begin(), fname.end(), '.') , fname.end());   // the extension removed
         command.insert( command.size(), fname.data() );    // the program name
         command.insert( command.size(), " && ./");
         command.insert( command.size(), fname.data() );
